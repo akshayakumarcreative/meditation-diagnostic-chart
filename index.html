@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Meditation Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* CSS: The Calming Aesthetics */
+        :root {
+            --bg-color: #F4F1EA;
+            --text-main: #3E4C3D;
+            --btn-bg: #A3B18A;
+            --btn-hover: #588157;
+            --card-bg: #FFFFFF;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        #app-container {
+            background-color: var(--card-bg);
+            max-width: 600px;
+            width: 90%;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--text-main);
+        }
+
+        p.advice-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 300;
+            white-space: pre-line;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background-color: var(--btn-bg);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-restart {
+            background-color: transparent;
+            color: var(--btn-hover);
+            border: 2px solid var(--btn-hover);
+            margin-top: 20px;
+        }
+
+        .btn-restart:hover {
+            background-color: var(--btn-hover);
+            color: white;
+        }
+
+        /* Fade-in Animation for smooth transitions */
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="content" class="fade-in"></div>
+    </div>
+
+    <script>
+        // JavaScript: The Logic and Diagnostic Tree
+
+        // 1. Define the decision tree based on your notes
+        const decisionTree = {
+            start: {
+                question: "Where are you on your meditation journey?",
+                options: [
+                    { text: "I do not meditate", next: "non_meditator" },
+                    { text: "I meditate", next: "meditator" }
+                ]
+            },
+            non_meditator: {
+                question: "What is holding you back right now?",
+                options: [
+                    { text: "I don't know how to start", result: "res_start" },
+                    { text: "I have no time", result: "res_time" },
+                    { text: "I have no motivation", result: "res_motivation" },
+                    { text: "Meditation feels like it's not for me", result: "res_notforme" },
+                    { text: "I can't sit still / I feel restless", result: "res_restless" }
+                ]
+            },
+            meditator: {
+                question: "How do you feel about your current practice?",
+                options: [
+                    { text: "I am comfortable with my practice", next: "comfortable" },
+                    { text: "I am not comfortable with my practice", next: "uncomfortable" }
+                ]
+            },
+            comfortable: {
+                question: "What would you like to focus on deepening?",
+                options: [
+                    { text: "I want to meditate longer", result: "res_longer" },
+                    { text: "I want to meditate to manifest", result: "res_manifest" },
+                    { text: "I want to meditate for mindfulness", result: "res_mindfulness" },
+                    { text: "I want to meditate to heal my health", result: "res_health" }
+                ]
+            },
+            uncomfortable: {
+                question: "What is your main struggle right now?",
+                options: [
+                    { text: "It's not relaxing / Too many thoughts", result: "res_thoughts" },
+                    { text: "No life-changing benefits / Cannot manifest", result: "res_nobenefits" },
+                    { text: "I cannot meditate longer (No time)", result: "res_notimemed" },
+                    { text: "I cannot sit longer (Body hurts / Restless)", result: "res_bodyhurts" }
+                ]
+            }
+        };
+
+        // 2. Define the final advice based on your exact guide
+        const results = {
+            res_start: {
+                title: "Just Pause",
+                text: "Meditation is simply pausing time to focus internally on you. Just find a quiet place to sit or lie down. Close your eyes.\n\nThat’s it! That is how you get 'started'. Set an intention for what you want out of the session, and begin."
+            },
+            res_time: {
+                title: "Start With What You Have",
+                text: "You can start with however much time you have: 1 minute, 5 minutes, or even 10 minutes of intentionally pausing time.\n\nIf you still can't find time, start by doing a session whenever you feel big emotions like anger, distress, or sadness. This gives you an immediate purpose to sit down and make space for yourself."
+            },
+            res_motivation: {
+                title: "Use Your Emotions as Fuel",
+                text: "Meditation is much easier to sit through with willpower if you have a fierce desire to change your life or get away from pain.\n\nIf you lack motivation, start by meditating only when you feel a whole bunch of big emotions (frustration, anger, sadness). This will give you an immediate purpose while you sit."
+            },
+            res_notforme: {
+                title: "Redefine Meditation",
+                text: "Meditation is merely the act of pausing time to focus internally on yourself, which allows every session to be different.\n\nYou don't have to sit cross-legged like on social media! You can sit on a chair, lie down to prime your body for sleep, or even go for a walk. Make it yours."
+            },
+            res_restless: {
+                title: "Hold Space for Your Chatter",
+                text: "Restlessness means your body has stored energy that needs to be let out. Intentionally think and feel all the things bothering you. Have a full conversation in your head until you exhaust the topic.\n\nSUPER IMPORTANT: You MUST then physically discharge all the energy. Feelings like anger generate immense cortisol. Get up and do a physical 90-second shake to let it out of your body!"
+            },
+            res_longer: {
+                title: "Acclimate Your Body",
+                text: "Initially, it takes 20-30 minutes simply for your body to settle down. Only then can you proceed to the amazing things you want to experience.\n\nIf you are ready to commit, start with 45-minute sessions for about a week to acclimate your body. As you condition yourself, your body will eventually learn to drop into deep relaxation within seconds."
+            },
+            res_manifest: {
+                title: "Feel the Future",
+                text: "Combine Dr. Joe Dispenza’s meditations with Neville Goddard’s 'living in the wish fulfilled'. Feel the emotions of your future before you live them so you can attract things instead of chasing them.\n\nIf resistance, fear, or lack shows up (even outside your session), hold space for those feelings to get them out of your system. Once clear, you'll be able to visualize and feel the future with pure intensity."
+            },
+            res_mindfulness: {
+                title: "Deepen Your Awareness",
+                text: "Mindfulness is about mastering the art of pausing time. Keep holding space for your feelings.\n\nIf you find yourself falling asleep, that's okay! It helps bypass the chatter in your mind. You may find yourself back in consciousness while perfectly still, with your brain waves slowed down enough to focus deeply."
+            },
+            res_health: {
+                title: "Heal Through Self-Compassion",
+                text: "The idea for better health is to use the love you have for yourself to heal your body (like Dr. Joe Dispenza’s 'Blessings of the Energy Centers').\n\nIf you struggle with self-love, process your non-self-love feelings before attempting this. Being able to truly surrender is how you progressively release the physical pain."
+            },
+            res_thoughts: {
+                title: "Exhaust the Chatter",
+                text: "Don't fight the thoughts. Intentionally think and feel all the things bothering you until you no longer feel the need to. Replay scenarios, vent, or apologize in your head.\n\nSUPER IMPORTANT: Once you exhaust the mental energy, you MUST physically discharge it. Stand up and do a physical 90-second shake to release the generated cortisol and adrenaline!"
+            },
+            res_nobenefits: {
+                title: "Clear the Resistance",
+                text: "If you aren't seeing manifestations, your body is likely sneakily disguising resistance. You might feel fine during meditation, but lack and fear show up in your day.\n\nWhen this happens, hold space for those negative feelings. Once you get the resistance out of your system, you clear the path for true visualization and synchronicity."
+            },
+            res_notimemed: {
+                title: "Micro-Moments Matter",
+                text: "Even if you are highly dedicated to changing your life, it is okay if you are short on time right now.\n\nYou can start with however much time you have: 1 minute, 5 minutes, or 10 minutes of intentionally pausing time to sit with yourself. Consistency builds the foundation."
+            },
+            res_bodyhurts: {
+                title: "Change Your Position",
+                text: "You do not need to force a cross-legged position. If sitting up distracts you because your body hurts, lying down is your best bet.\n\nSettle down on your back (preferably on the floor with a yoga mat and a blanket). It helps your body relax faster by priming you up for sleep. If you fall asleep, let it happen—it bypasses the mind chatter!"
+            }
+        };
+
+        // 3. DOM Elements and App Logic
+        const contentDiv = document.getElementById('content');
+
+        // Render a question state
+        function renderQuestion(nodeKey) {
+            const node = decisionTree[nodeKey];
+            let html = `<h1>${node.question}</h1>`;
+            
+            node.options.forEach(option => {
+                if (option.next) {
+                    html += `<button class="btn" onclick="renderQuestion('${option.next}')">${option.text}</button>`;
+                } else if (option.result) {
+                    html += `<button class="btn" onclick="renderResult('${option.result}')">${option.text}</button>`;
+                }
+            });
+
+            animateTransition(html);
+        }
+
+        // Render the final advice
+        function renderResult(resultKey) {
+            const result = results[resultKey];
+            let html = `
+                <h1>${result.title}</h1>
+                <p class="advice-text">${result.text}</p>
+                <button class="btn btn-restart" onclick="renderQuestion('start')">Start Over</button>
+            `;
+            
+            animateTransition(html);
+        }
+
+        // Handle the smooth CSS fade-in
+        function animateTransition(newHtml) {
+            contentDiv.classList.remove('fade-in');
+            
+            // Trigger reflow to restart animation
+            void contentDiv.offsetWidth; 
+            
+            contentDiv.innerHTML = newHtml;
+            contentDiv.classList.add('fade-in');
+        }
+
+        // Initialize the app
+        renderQuestion('start');
+
+    </script>
+</body>
+</html>
