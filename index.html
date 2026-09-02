@@ -6,11 +6,12 @@
     <title>Your Meditation Tree</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* CSS: The Calming Aesthetics & Tree Structure */
+        /* CSS: The Calming Aesthetics & Horizontal Tree Structure */
         :root {
             --bg-color: #F4F1EA;
-            --tree-main: #588157; /* Calming sage green for the tree and active branches */
+            --tree-main: #588157; /* Calming sage green */
             --node-inactive: #A3B18A;
+            --node-hover: #7E9473;
             --text-main: #3E4C3D;
             --card-bg: #FFFFFF;
         }
@@ -20,128 +21,151 @@
             color: var(--text-main);
             font-family: 'Nunito', sans-serif;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            overflow-x: hidden;
-        }
-
-        #app-container {
-            position: relative;
-            background-color: var(--card-bg);
-            max-width: 800px;
-            width: 90%;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
         h1 {
             font-weight: 600;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 40px;
             color: var(--text-main);
+            text-align: center;
         }
 
-        /* The central trunk of the tree */
-        #tree-structure {
-            position: relative;
+        /* Container allowing the tree to expand horizontally */
+        #app-container {
             width: 100%;
+            max-width: 1200px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-top: 40px;
+            align-items: flex-start;
+            overflow-x: auto; /* Adds scrollbar if tree gets very wide */
+            padding-bottom: 40px;
         }
 
-        #trunk {
-            width: 8px;
-            height: 100px;
-            background-color: var(--tree-main);
-            border-radius: 4px;
-        }
-
-        /* Container for options (branches) */
-        .branch-container {
-            position: relative;
+        /* The Horizontal Tree CSS */
+        .tree-container {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            align-items: flex-start;
+            padding: 20px;
         }
 
-        /* Lines connecting the nodes to the parent branch/trunk */
-        .branch-line {
-            position: absolute;
-            background-color: var(--tree-main);
-            height: 2px;
-            top: -10px; /* Adjust based on your trunk height */
-            transform-origin: center;
-            z-index: -1;
-        }
-
-        /* The interactive nodes */
-        .node {
+        .node-wrapper {
+            display: flex;
+            align-items: center;
             position: relative;
+            margin: 10px 0;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .children-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-left: 40px; /* Space for the horizontal line */
+            position: relative;
+            border-left: 2px solid var(--tree-main);
+            padding-left: 20px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        /* The horizontal lines connecting branches */
+        .children-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -40px;
+            width: 40px;
+            height: 2px;
+            background-color: var(--tree-main);
+        }
+
+        /* Individual horizontal connectors for child nodes */
+        .node-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -20px; /* Connects to the vertical border */
+            width: 20px;
+            height: 2px;
+            background-color: var(--tree-main);
+        }
+
+        /* Remove connector for root nodes */
+        .tree-container > .children-wrapper {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+        .tree-container > .children-wrapper::before,
+        .tree-container > .children-wrapper > .node-wrapper::before {
+            display: none;
+        }
+
+        .node {
             background-color: var(--node-inactive);
             color: white;
             border: none;
             padding: 15px 25px;
-            margin: 20px 10px;
-            border-radius: 30px; /* Rounder nodes */
+            border-radius: 12px;
             font-size: 1rem;
             font-family: 'Nunito', sans-serif;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            z-index: 10;
+            transition: all 0.3s ease;
+            max-width: 300px;
+            text-align: left;
+            line-height: 1.4;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 2;
         }
 
         .node:hover {
+            background-color: var(--node-hover);
             transform: translateY(-2px);
         }
 
         .node.active {
             background-color: var(--tree-main);
-            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(88, 129, 87, 0.3);
         }
 
-        /* Advice Card (The leaf/flower of the tree) */
+        /* Advice Card (The Solution) */
         #advice-card {
-            position: relative;
             background-color: var(--card-bg);
-            padding: 30px;
+            padding: 40px;
             border-radius: 15px;
             margin-top: 40px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: none; /* Hidden by default */
+            animation: fadeInUp 0.5s ease forwards;
+            align-self: center;
         }
 
         p.advice-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1.15rem;
+            line-height: 1.7;
             font-weight: 300;
             white-space: pre-line;
             margin: 0;
         }
 
         .btn-restart {
-            position: relative;
             background-color: transparent;
             color: var(--tree-main);
             border: 2px solid var(--tree-main);
-            padding: 10px 20px;
-            margin-top: 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            margin-top: 30px;
+            border-radius: 8px;
             font-size: 1rem;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn-restart:hover {
@@ -149,95 +173,72 @@
             color: white;
         }
 
-        /* Animation class to trigger fade-ins */
-        .show {
-            opacity: 1;
-            transform: translateY(0);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
+    <h1>Where are you on your meditation journey?</h1>
+
     <div id="app-container">
-        <h1>Where are you on your meditation journey?</h1>
+        <!-- The tree renders here -->
+        <div id="tree-root" class="tree-container"></div>
+    </div>
 
-        <div id="tree-structure">
-            <div id="trunk"></div>
-            <!-- Dynamic tree branches and nodes will be injected here -->
-        </div>
-
-        <div id="advice-card">
-            <p class="advice-text"></p>
-            <button class="btn-restart" onclick="restartTree()">Start Over</button>
-        </div>
+    <!-- The Result/Solution Card -->
+    <div id="advice-card">
+        <p class="advice-text"></p>
+        <button class="btn-restart" onclick="restartTree()">Start Over</button>
     </div>
 
     <script>
-        // JavaScript: Dynamic Tree Generation & Navigation
+        // 1. Structure the tree connections directly
+        const treeBranches = {
+            start: [
+                { id: 'non_meditator', text: "I do not meditate" },
+                { id: 'meditator', text: "I meditate" }
+            ],
+            non_meditator: [
+                { id: 'res_not_started', text: "doesn't want to meditate" },
+                { id: 'res_no_how_to', text: "wants to meditate but don't know how to" },
+                { id: 'res_no_time_nm', text: "wants to meditate but no time" },
+                { id: 'res_no_motivation_nm', text: "wants to meditate but no motivation" },
+                { id: 'res_not_for_them_nm', text: "wants to meditate but they feel like meditation is not for them" },
+                { id: 'res_cannot_sit_nm', text: "wants to meditate But they can’t sit still" },
+                { id: 'res_feeling_restless_nm', text: "wants to meditate But they feel so restless" }
+            ],
+            meditator: [
+                { id: 'comfortable', text: "Comfortable with their practice" },
+                { id: 'uncomfortable', text: "Not comfortable with their practice" }
+            ],
+            comfortable: [
+                { id: 'res_deepen_longer', text: "Meditate longer" },
+                { id: 'res_deepen_manifest', text: "Meditate to manifest" },
+                { id: 'res_deepen_mindfulness', text: "Meditate for mindfulness" },
+                { id: 'res_deepen_health', text: "Meditate to heal their health" }
+            ],
+            uncomfortable: [
+                { id: 'res_struggle_relax', text: "Not relaxing Too many thoughts" },
+                { id: 'res_struggle_manifest', text: "No life changing benefits Not able to manifest what they are looking for" },
+                { id: 'res_struggle_time', text: "Cannot meditate longer No time" },
+                { id: 'res_struggle_body', text: "Cannot meditate longer Cannot sit longer Body hurts" },
+                { id: 'res_struggle_restless', text: "Cannot meditate longer Cannot sit longer Feeling restless" }
+            ]
+        };
 
-        const decisionTreeData = [
-            // Level 0: Start
-            {
-                level: 0,
-                parent: 'trunk',
-                options: [
-                    { id: 'non_meditator', text: "I do not meditate" },
-                    { id: 'meditator', text: "I meditate" }
-                ]
-            },
-            // Level 1: Under "I do not meditate"
-            {
-                level: 1,
-                parent: 'non_meditator',
-                options: [
-                    { id: 'res_not_started', text: "doesn't want to meditate" },
-                    { id: 'res_no_how_to', text: "wants to meditate but don't know how to" },
-                    { id: 'res_no_time_nm', text: "wants to meditate but no time" },
-                    { id: 'res_no_motivation_nm', text: "wants to meditate but no motivation" },
-                    { id: 'res_not_for_them_nm', text: "wants to meditate but they feel like meditation is not for them" },
-                    { id: 'res_cannot_sit_nm', text: "wants to meditate But they can’t sit still" },
-                    { id: 'res_feeling_restless_nm', text: "wants to meditate But they feel so restless" }
-                ]
-            },
-            // Level 1: Under "I meditate"
-            {
-                level: 1,
-                parent: 'meditator',
-                options: [
-                    { id: 'comfortable', text: "Comfortable with my practice" },
-                    { id: 'uncomfortable', text: "Not comfortable with my practice" }
-                ]
-            },
-            // Level 2: Under "Comfortable with my practice"
-            {
-                level: 2,
-                parent: 'comfortable',
-                options: [
-                    { id: 'res_deepen_longer', text: "Meditate longer" },
-                    { id: 'res_deepen_manifest', text: "Meditate to manifest" },
-                    { id: 'res_deepen_mindfulness', text: "Meditate for mindfulness" },
-                    { id: 'res_deepen_health', text: "Meditate to heal my health" }
-                ]
-            },
-            // Level 2: Under "Not comfortable with my practice"
-            {
-                level: 2,
-                parent: 'uncomfortable',
-                options: [
-                    { id: 'res_struggle_relax', text: "Not relaxing Too many thoughts" },
-                    { id: 'res_struggle_manifest', text: "No life changing benefits Not able to manifest" },
-                    { id: 'res_struggle_time', text: "Cannot meditate longer No time" },
-                    { id: 'res_struggle_body', text: "Cannot meditate longer Cannot sit longer Body hurts" },
-                    { id: 'res_struggle_restless', text: "Cannot meditate longer Cannot sit longer Feeling restless" }
-                ]
-            }
-        ];
-
+        // 2. The Solutions using your exact original text
         const resultsData = {
             res_not_started: {
                 title: "Just Find A Quiet Place",
-                text: "Meditation is pausing time to focus internally on you.\n\nJust find a quiet place to sit or lie down. Close your eyes. That’s it. That is how you get “started” hahaha."
+                text: "Meditation is pausing time to focus internally on you.\n\nJust find a quiet place to sit or lie down. Close your eyes.\n\nThat’s it. That is how you get “started” hahaha."
             },
             res_no_how_to: {
                 title: "Just Get Started",
@@ -245,7 +246,7 @@
             },
             res_no_time_nm: {
                 title: "Start With What You Have",
-                text: "You can start with how much ever time you have, 1 minute, 5 minutes, or even 10 minutes of intentionally pausing time to sit with yourself.\n\nIf you still can't find time, start by doing a session whenever you feel a whole bunch of big emotions like anger, distress, frustration, sadness etc. Starting here will give you a purpose while you sit down and will help you take the first step to actually find time and space for yourself."
+                text: "You can start with how much ever time you have, 1 minute, 5 minutes, or even 10 minutes of intentionally pausing time to sit with yourself.\n\nIf you do not have any motivation to find time, but you still want to meditate, then start by doing a session whenever you feel a whole bunch of big emotions like anger, distress, frustration, sadness etc. Starting here will give you a purpose while you sit down and will help you take the first step to actually find time and space for yourself."
             },
             res_no_motivation_nm: {
                 title: "Use Big Emotions as Your Purpose",
@@ -253,167 +254,131 @@
             },
             res_not_for_them_nm: {
                 title: "Redefine Meditation For You",
-                text: "Meditation is pausing time to focus internally on you.\n\nYou don't have to sit cross-legged like on social media! You can sit on a chair. If sitting up in any form distracts you because your body is uncomfortable, lying down is your best bet.\n\nLying down on your back will help your body relax faster since it is priming you up for sleep. If you fall asleep, that's okay! It helps bypass all the chatter in your mind."
+                text: "Meditation is pausing time to focus internally on you.\n\nYou don't have to sit cross-legged like on social media! You can sit on a chair. If sitting up in any form distracts you because your body is uncomfortable, lying down is your best bet.\n\nLying down on your back will help your body relax faster since it is priming you up for sleep. If you fall asleep, that's okay! I personally found that sleeping really helps bypass all the chatter in your mind."
             },
             res_cannot_sit_nm: {
                 title: "Hold Space For Mind Chatter",
-                text: "Your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nDeal with this by intentionally thinking and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake. Feelings like anger can cause an immense amount of cortisol and adrenaline to be generated which then needs to be let out of your body and one of the best ways to do that is to shake it off."
+                text: "You need to hold space for your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nHow to deal with this: Intentionally think and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake. Feelings like anger and irritation and frustration can cause an immense amount of cortisol and adrenaline to be generated which then needs to be let out of your body and one of the best ways to do that is to shake it off."
             },
             res_feeling_restless_nm: {
                 title: "Hold Space & physically Shake It Off",
-                text: "Your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nDeal with this by intentionally thinking and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake. Feelings like anger can cause an immense amount of cortisol and adrenaline to be generated which then needs to be let out of your body and one of the best ways to do that is to shake it off."
+                text: "You need to hold space for your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nHow to deal with this: Intentionally think and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake. Feelings like anger and irritation and frustration can cause an immense amount of cortisol and adrenaline to be generated which then needs to be let out of your body and one of the best ways to do that is to shake it off."
             },
             res_deepen_longer: {
                 title: "Condition Your Body to Relax Quicker",
-                text: "Initially, it will take around 20-30 minutes simply for your body to settle down and relax. And only once you relax, can you start proceeding towards the other amazing things you want to experience from the session.\n\nAs you keep conditioning your body with meditation, your body will learn to condition itself to relax quicker when you begin the sitting. I have found my body deeply relaxed within seconds."
+                text: "Initially, it will take around 20-30 minutes simply for your body to settle down and relax. And only once you relax, can you start proceeding towards the other amazing things you want to experience from the session.\n\nAs you keep conditioning your body with meditation, your body will learn to condition itself to relax quicker when you begin the sitting. I have found my body deeply relaxed within seconds that sometimes, even just 20 minutes felt like a really long solid session."
             },
             res_deepen_manifest: {
                 title: "Feel The Future Before You Live It",
-                text: "The idea here is to feel the emotions of your future before you live them so that you can attract the amazing things to you instead of chasing it because that is what true manifestation is.\n\nVisualize a scene that makes you feel like you were right there ( along with your five senses). If resistance, fear, or lack shows up, hold space for your feelings to get it out of your system before attempting again."
+                text: "The idea here is to feel the emotions of your future before you live them so that you can attract the amazing things to you instead of chasing it because that is what true manifestation is. You allow the path to show itself to you and you simply walk on it.\n\nIf you can truly visualize during your meditation session a scene that makes you feel like you were right there ( along with your five senses), you will instantly find syncronocities showing up in your life.\n\nIf it shows up outside your meditation session or during your meditation session, it means you need to hold space for your feelings . Then once you get it out of your system, you should be able to feel the future with more intensity."
             },
             res_deepen_mindfulness: {
                 title: "Pause to Focus Internally",
-                text: "Meditation is pausing time to focus internally on you.\n\nUse your intention to set what you get from each session. If you are struggling with a specific feeling, process your non self love feelings before attempting other meditations."
+                text: "Meditation is pausing time to focus internally on you.\n\nIf meditation is merely the act of pausing time to focus internally on yourself, then it allows for every session to be so different.\n\nAs you do your meditation practice, you might fall asleep. You may find yourself back in consciousness while still not moving. Then you can actually proceed to focus on what you want to meditate on. Since you’ll still be immobilized, your brain’s waves will have already slowed down enough for you to move to your next step in the process."
             },
             res_deepen_health: {
-                title: "Blessing of the Energy Centers",
-                text: "The idea for better health is to use the love you have for yourself to heal your body.\n\nSurrender is how you would get yourself to progressively release the pain. If you struggle with self love, process your non self love feelings before attempting this for maximum results."
+                title: "Blessings of the Energy Centers",
+                text: "The idea for better health is to use the love you have for yourself to heal your body. Dr. Joe Dispenza’s famous “Blessings of the energy centers” meditation is a guided meditation I would recommend for this.\n\nIf you struggle a lot with self love, I would recommend processing your non self love feelings before attempting this for maximum results.\n\nBeing able to surrender is how you would get yourself to progressively release the pain."
             },
             res_struggle_relax: {
                 title: "Exhaust The Mind Chatter",
-                text: "Your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nDeal with this by intentionally thinking and feel all the things bothering you until you no longer feel the need to do more on this topic. You can do this for several days.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake."
+                text: "You need to hold space for your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nHow to deal with this: Intentionally think and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic. You’ll notice it getting less and less intense every day.\n\nAnother thing to note: simply replaying a situation will not help. You must chatter as though you are talking to yourself or to another person about this.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake."
             },
             res_struggle_manifest: {
                 title: "Process The Resistance First",
-                text: "The body can sneakily disguise the resistance. You would think you feel alright during your meditation session but the resistance, fear, or lack shows up outside of your meditation session.\n\nIf it shows up, it means you need to hold space for your feelings . Then once you get it out of your system, you should be able to feel the future with more intensity."
+                text: "Oftentimes, it is hard to truly feel it because your body is likely resisting it. And sometimes, even if you feel like you really do feel it, the body can sneakily disguise the resistance. You would think you feel alright during your meditation session but the resistance, fear, or lack shows up outside of your meditation session.\n\nIf it shows up outside your meditation session or during your meditation session, it means you need to hold space for your feelings . Then once you get it out of your system, you should be able to feel the future with more intensity."
             },
             res_struggle_time: {
-                title: "Consistency Over Duration",
-                text: "You can start with how much ever time you have, 1 minute, 5 minutes, or even 10 minutes of intentionally pausing time to sit with yourself.\n\nMicro sessions still build the foundation. Start with Micro sessions and find time for Micro sessions consistently."
+                title: "Micro Sessions Build The Foundation",
+                text: "However, even if you are someone very dedicated to changing their life and still not able to find time, you can start with how much ever time you have, 1 minute, 5 minutes, or even 10 minutes of intentionally pausing time to sit with yourself.\n\nMeditation will be so much easier to sit through or lie down through with willpower if you have a fierce desire to change your life, get away from any sort of pain, or manifest your dreams."
             },
             res_struggle_body: {
                 title: "Lying Down is Your Best Bet",
-                text: "Force crosslegged is not necessary. If that doesn’t work, you can sit on a chair. If sitting up in any form distracts you because your body is uncomfortable, lying down is your best bet.\n\nLying down on your back will help your body relax faster since it is priming you up for sleep. I use a yoga mat and a bedsheet to cover me and with my eye mask on the floor."
+                text: "You’ll often find people sitting crosslegged whenever they talk about meditation on social media. But that is not the only position. If you can sit cross-legged and add support to your body, that’s amazing. If that doesn’t work, you can also sit on a chair.\n\nIf sitting up in any form distracts you because your body is uncomfortable, lying down is your best bet. You’ll need to settle down on your back, and it will help your body relax faster since it is priming you up for sleep. For me, that looked like lying down on the floor. I use a yoga mat and a bedsheet to cover me and with my eye mask."
             },
             res_struggle_restless: {
                 title: "Somatic Discharge (Shaking)",
-                text: "Restlessness is stored energy that needs to be let out of the system.\n\nIntentionally think and feel all the things bothering you. Replay the scenarios and chatter until you are done. Then MUST physically discharge all the energy. Feelings like anger can cause an immense amount of cortisol and adrenaline to be generated which needs to be let out of your body. One of the best ways to do that is a physical 90 second shake."
+                text: "You need to hold space for your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nHow to deal with this: Intentionally think and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic. Another thing to note: simply replaying a situation will not help. You must chatter as though you are talking to yourself or to another person about this.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake. Feelings like anger and irritation and frustration can cause an immense amount of cortisol and adrenaline to be generated which then needs to be let out of your body and one of the best ways to do that is to shake it off."
             }
         };
 
-        // DOM Elements
-        const treeStructureDiv = document.getElementById('tree-structure');
+        // State Tracking
+        // Array tracks the path of clicked IDs to know what to keep open
+        let activePath = ['start'];
+        
+        const treeRootDiv = document.getElementById('tree-root');
         const adviceCardDiv = document.getElementById('advice-card');
         const adviceTextP = adviceCardDiv.querySelector('.advice-text');
 
-        let currentActiveNodes = [];
+        // Main function to build HTML recursively
+        function buildTreeHTML(nodeId, level) {
+            const options = treeBranches[nodeId];
+            if (!options) return ''; // Reached a leaf node
 
-        // Function to create a node element
-        function createNode(option, level) {
-            const button = document.createElement('button');
-            button.className = 'node';
-            button.id = option.id;
-            button.textContent = option.text;
-            button.dataset.level = level;
-            button.onclick = () => nodeClicked(option.id, level);
-            return button;
-        }
-
-        // Function to render the tree and handle the Reset logic
-        function renderTree() {
-            // Find the active hierarchy based on clicked nodes
-            let hierarchyToRender = decisionTreeData.filter(item => 
-                currentActiveNodes.includes(item.parent) || item.parent === 'trunk'
-            );
-
-            // Clear previous elements
-            treeStructureDiv.innerHTML = '<div id="trunk"></div>';
-            adviceCardDiv.classList.remove('show');
-
-            // Render each level with a smooth animation
-            hierarchyToRender.forEach((levelData, index) => {
-                const container = document.createElement('div');
-                container.className = 'branch-container';
-
-                levelData.options.forEach(option => {
-                    const node = createNode(option, levelData.level);
-                    if (currentActiveNodes.includes(option.id)) {
-                        node.classList.add('active');
-                    }
-                    container.appendChild(node);
-                });
-
-                // Add lines back to the previous level/trunk
-                let parentNode = document.getElementById(levelData.parent);
-                if (!parentNode && levelData.parent !== 'trunk') {
-                    // Try to find the previous node if it's rendered further up
-                    parentNode = [...treeStructureDiv.querySelectorAll('.node')].find(n => n.id === levelData.parent);
-                }
-
-                if (parentNode || levelData.parent === 'trunk') {
-                    // Calculate branch line connection
-                    // Note: Basic visual for line. Complexity increases for fully dynamic connections.
-                    const branchLine = document.createElement('div');
-                    branchLine.className = 'branch-line';
-                    
-                    // Basic alignment visual; for perfect accuracy, you'd need heavy JS calculation.
-                    branchLine.style.width = '1px';
-                    branchLine.style.height = '10px';
-                    branchLine.style.left = '50%';
-                    container.prepend(branchLine);
-                }
-
-                treeStructureDiv.appendChild(container);
-
-                // Add delay for a branching effect
-                setTimeout(() => container.classList.add('show'), index * 150);
-            });
-
-            // Check if the final node is a result node
-            const finalNodeId = currentActiveNodes[currentActiveNodes.length - 1];
-            if (finalNodeId && finalNodeId.startsWith('res_')) {
-                showAdvice(finalNodeId);
-            }
-        }
-
-        // Action when a node is clicked
-        function nodeClicked(nodeId, level) {
-            // Check if this node is already active or if it prunes older branches
-            const nodeIndex = currentActiveNodes.indexOf(nodeId);
-
-            if (nodeIndex !== -1) {
-                // If clicked an active node, do nothing (or you could use this to restart from this level)
-                return;
-            } else {
-                // Reset to previous level logic
-                // Remove all branches that are at the same level or 'younger' (deeper)
-                currentActiveNodes = currentActiveNodes.filter(activeNode => {
-                    const activeNodeLevel = parseInt(document.getElementById(activeNode).dataset.level);
-                    return activeNodeLevel < level;
-                });
+            let html = `<div class="children-wrapper">`;
+            
+            options.forEach(option => {
+                const isActive = activePath.includes(option.id);
+                const activeClass = isActive ? 'active' : '';
                 
-                // Add the new active node
-                currentActiveNodes.push(nodeId);
-            }
+                html += `<div class="node-wrapper">
+                            <button class="node ${activeClass}" onclick="handleNodeClick('${option.id}', ${level + 1})">
+                                ${option.text}
+                            </button>`;
+                
+                // If this node was clicked, recursively build its children
+                if (isActive) {
+                    html += buildTreeHTML(option.id, level + 1);
+                }
+                
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
+            return html;
+        }
 
+        // Render function
+        function renderTree() {
+            // Build tree starting from root ('start')
+            treeRootDiv.innerHTML = buildTreeHTML('start', 0);
+
+            // Check if the last clicked node is a final result
+            const lastClickedId = activePath[activePath.length - 1];
+            if (resultsData[lastClickedId]) {
+                showAdvice(lastClickedId);
+            } else {
+                adviceCardDiv.style.display = 'none';
+            }
+        }
+
+        // Click Handler
+        function handleNodeClick(id, level) {
+            // If they click a node, we slice the active path up to this level
+            // This cleanly closes sibling branches and reopens the clicked one
+            activePath = activePath.slice(0, level);
+            activePath.push(id);
             renderTree();
         }
 
-        // Function to show advice card
         function showAdvice(resultId) {
             const result = resultsData[resultId];
             adviceTextP.innerHTML = `<strong>${result.title}</strong><br><br>${result.text}`;
-            // Delay slightly for the branches to load before showing advice
-            setTimeout(() => adviceCardDiv.classList.add('show'), 400);
+            adviceCardDiv.style.display = 'block';
+            
+            // Auto scroll to the result so the user sees it immediately
+            setTimeout(() => {
+                adviceCardDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
 
-        // Restart function
         function restartTree() {
-            currentActiveNodes = [];
+            activePath = ['start'];
             renderTree();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Initialize tree
+        // Start the app
         renderTree();
 
     </script>
