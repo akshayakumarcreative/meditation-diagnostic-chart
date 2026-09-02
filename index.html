@@ -9,7 +9,7 @@
         /* CSS: The Calming Aesthetics & Horizontal Tree Structure */
         :root {
             --bg-color: #F4F1EA;
-            --tree-main: #588157; /* Calming sage green */
+            --tree-main: #588157; 
             --node-inactive: #A3B18A;
             --node-hover: #7E9473;
             --text-main: #3E4C3D;
@@ -43,7 +43,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            overflow-x: auto; /* Adds scrollbar if tree gets very wide */
+            overflow-x: auto; 
             padding-bottom: 40px;
         }
 
@@ -65,7 +65,7 @@
         .children-wrapper {
             display: flex;
             flex-direction: column;
-            margin-left: 40px; /* Space for the horizontal line */
+            margin-left: 40px; 
             position: relative;
             border-left: 2px solid var(--tree-main);
             padding-left: 20px;
@@ -89,7 +89,7 @@
             content: '';
             position: absolute;
             top: 50%;
-            left: -20px; /* Connects to the vertical border */
+            left: -20px; 
             width: 20px;
             height: 2px;
             background-color: var(--tree-main);
@@ -143,7 +143,7 @@
             width: 90%;
             max-width: 800px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            display: none; /* Hidden by default */
+            display: none; 
             animation: fadeInUp 0.5s ease forwards;
             align-self: center;
         }
@@ -189,57 +189,56 @@
     <h1>Where are you on your meditation journey?</h1>
 
     <div id="app-container">
-        <!-- The tree renders here -->
         <div id="tree-root" class="tree-container"></div>
     </div>
 
-    <!-- The Result/Solution Card -->
     <div id="advice-card">
         <p class="advice-text"></p>
         <button class="btn-restart" onclick="restartTree()">Start Over</button>
     </div>
 
     <script>
-        // 1. Structure the tree connections directly
+        // 1. Structure the tree connections directly (Updated with 1st person phrasing & new branches)
         const treeBranches = {
             start: [
-                { id: 'non_meditator', text: "I do not meditate" },
-                { id: 'meditator', text: "I meditate" }
+                { id: 'meditator', text: "I meditate" },
+                { id: 'non_meditator', text: "I do not meditate" }
             ],
             non_meditator: [
-                { id: 'res_not_started', text: "doesn't want to meditate" },
-                { id: 'res_no_how_to', text: "wants to meditate but don't know how to" },
-                { id: 'res_no_time_nm', text: "wants to meditate but no time" },
-                { id: 'res_no_motivation_nm', text: "wants to meditate but no motivation" },
-                { id: 'res_not_for_them_nm', text: "wants to meditate but they feel like meditation is not for them" },
-                { id: 'res_cannot_sit_nm', text: "wants to meditate But they can’t sit still" },
-                { id: 'res_feeling_restless_nm', text: "wants to meditate But they feel so restless" }
+                { id: 'wants_to_meditate', text: "I want to meditate" }
+            ],
+            wants_to_meditate: [
+                { id: 'res_no_how_to', text: "But I don't know how to" },
+                { id: 'res_no_time_nm', text: "But I have no time" },
+                { id: 'res_no_motivation_nm', text: "But I have no motivation" },
+                { id: 'res_not_for_them_nm', text: "But I feel like meditation is not for me" },
+                { id: 'res_cannot_sit_nm', text: "But I can’t sit still" },
+                { id: 'res_feeling_restless_nm', text: "But I feel so restless" }
             ],
             meditator: [
-                { id: 'comfortable', text: "Comfortable with their practice" },
-                { id: 'uncomfortable', text: "Not comfortable with their practice" }
+                { id: 'comfortable', text: "I am comfortable with my practice" },
+                { id: 'uncomfortable', text: "I am not comfortable with my practice" }
             ],
             comfortable: [
-                { id: 'res_deepen_longer', text: "Meditate longer" },
-                { id: 'res_deepen_manifest', text: "Meditate to manifest" },
-                { id: 'res_deepen_mindfulness', text: "Meditate for mindfulness" },
-                { id: 'res_deepen_health', text: "Meditate to heal their health" }
+                { id: 'res_deepen_longer', text: "I want to meditate longer" },
+                { id: 'res_deepen_manifest', text: "I want to meditate to manifest" },
+                { id: 'res_deepen_mindfulness', text: "I want to meditate for mindfulness" },
+                { id: 'res_deepen_health', text: "I want to meditate to heal my health" }
             ],
             uncomfortable: [
-                { id: 'res_struggle_relax', text: "Not relaxing Too many thoughts" },
-                { id: 'res_struggle_manifest', text: "No life changing benefits Not able to manifest what they are looking for" },
-                { id: 'res_struggle_time', text: "Cannot meditate longer No time" },
-                { id: 'res_struggle_body', text: "Cannot meditate longer Cannot sit longer Body hurts" },
-                { id: 'res_struggle_restless', text: "Cannot meditate longer Cannot sit longer Feeling restless" }
+                { id: 'res_struggle_relax', text: "My practice is not relaxing / I have too many thoughts" },
+                { id: 'res_struggle_manifest', text: "I see no life changing benefits / I am not able to manifest what I am looking for" },
+                { id: 'cannot_meditate_longer', text: "I cannot meditate longer" }
+            ],
+            cannot_meditate_longer: [
+                { id: 'res_struggle_time', text: "Because I have no time" },
+                { id: 'res_struggle_body', text: "Because I cannot sit longer / My body hurts" },
+                { id: 'res_struggle_restless', text: "Because I cannot sit longer / I feel restless" }
             ]
         };
 
         // 2. The Solutions using your exact original text
         const resultsData = {
-            res_not_started: {
-                title: "Just Find A Quiet Place",
-                text: "Meditation is pausing time to focus internally on you.\n\nJust find a quiet place to sit or lie down. Close your eyes.\n\nThat’s it. That is how you get “started” hahaha."
-            },
             res_no_how_to: {
                 title: "Just Get Started",
                 text: "Meditation is pausing time to focus internally on you. Just find a quiet place to sit or lie down. Close your eyes. That’s it. That is how you get “started” hahaha.\n\nInitially, it will take around 20-30 minutes simply for your body to settle down and relax. And only once you relax, can you start proceeding towards the other amazing things you want to experience from the session."
@@ -303,7 +302,6 @@
         };
 
         // State Tracking
-        // Array tracks the path of clicked IDs to know what to keep open
         let activePath = ['start'];
         
         const treeRootDiv = document.getElementById('tree-root');
@@ -326,7 +324,6 @@
                                 ${option.text}
                             </button>`;
                 
-                // If this node was clicked, recursively build its children
                 if (isActive) {
                     html += buildTreeHTML(option.id, level + 1);
                 }
@@ -340,10 +337,8 @@
 
         // Render function
         function renderTree() {
-            // Build tree starting from root ('start')
             treeRootDiv.innerHTML = buildTreeHTML('start', 0);
 
-            // Check if the last clicked node is a final result
             const lastClickedId = activePath[activePath.length - 1];
             if (resultsData[lastClickedId]) {
                 showAdvice(lastClickedId);
@@ -354,8 +349,6 @@
 
         // Click Handler
         function handleNodeClick(id, level) {
-            // If they click a node, we slice the active path up to this level
-            // This cleanly closes sibling branches and reopens the clicked one
             activePath = activePath.slice(0, level);
             activePath.push(id);
             renderTree();
@@ -366,7 +359,6 @@
             adviceTextP.innerHTML = `<strong>${result.title}</strong><br><br>${result.text}`;
             adviceCardDiv.style.display = 'block';
             
-            // Auto scroll to the result so the user sees it immediately
             setTimeout(() => {
                 adviceCardDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 100);
