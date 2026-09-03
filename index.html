@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Meditation Tree</title>
+    <title>Meditation Diagnostic Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         /* CSS: The Calming Aesthetics & Horizontal Tree Structure */
@@ -156,6 +156,13 @@
             margin: 0;
         }
 
+        p.advice-text a {
+            color: var(--tree-main);
+            font-weight: 600;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
         .btn-restart {
             background-color: transparent;
             color: var(--tree-main);
@@ -186,7 +193,7 @@
 </head>
 <body>
 
-    <h1>Where are you on your meditation journey?</h1>
+    <h1>Meditation Diagnostic Tool</h1>
 
     <div id="app-container">
         <div id="tree-root" class="tree-container"></div>
@@ -198,14 +205,15 @@
     </div>
 
     <script>
-        // 1. Structure the tree connections directly (Updated with 1st person phrasing & new branches)
+        // 1. Structure the tree connections directly
         const treeBranches = {
             start: [
-                { id: 'meditator', text: "I meditate" },
-                { id: 'non_meditator', text: "I do not meditate" }
+                { id: 'non_meditator', text: "I do not meditate" },
+                { id: 'meditator', text: "I meditate" }
             ],
             non_meditator: [
-                { id: 'wants_to_meditate', text: "I want to meditate" }
+                { id: 'wants_to_meditate', text: "I want to meditate" },
+                { id: 'res_dont_want_to', text: "I don't want to meditate" }
             ],
             wants_to_meditate: [
                 { id: 'res_no_how_to', text: "But I don't know how to" },
@@ -237,8 +245,12 @@
             ]
         };
 
-        // 2. The Solutions using your exact original text
+        // 2. The Solutions using your exact context
         const resultsData = {
+            res_dont_want_to: {
+                title: "Discover The Possibilities",
+                text: "Meditation has been proven to help with massive health and manifestation benefits.\n\nCheck out Dr. Joe Dispenza's incredible client meditation success stories to see if that spurs interest in you to give it a try.\n\n<a href='https://drjoedispenza.com/stories-of-transformation' target='_blank'>https://drjoedispenza.com/stories-of-transformation</a>"
+            },
             res_no_how_to: {
                 title: "Just Get Started",
                 text: "Meditation is pausing time to focus internally on you. Just find a quiet place to sit or lie down. Close your eyes. That’s it. That is how you get “started” hahaha.\n\nInitially, it will take around 20-30 minutes simply for your body to settle down and relax. And only once you relax, can you start proceeding towards the other amazing things you want to experience from the session."
@@ -264,8 +276,8 @@
                 text: "You need to hold space for your Mind chatter which is only happening because your body has stored energy that needs to be let out of the system.\n\nHow to deal with this: Intentionally think and feel all the things bothering you. Do this until you no longer feel the need to do more on this topic.\n\nSuper Important: You MUST then physically discharge all the energy from this session. Do this with a physical 90 second shake. Feelings like anger and irritation and frustration can cause an immense amount of cortisol and adrenaline to be generated which then needs to be let out of your body and one of the best ways to do that is to shake it off."
             },
             res_deepen_longer: {
-                title: "Condition Your Body to Relax Quicker",
-                text: "Initially, it will take around 20-30 minutes simply for your body to settle down and relax. And only once you relax, can you start proceeding towards the other amazing things you want to experience from the session.\n\nAs you keep conditioning your body with meditation, your body will learn to condition itself to relax quicker when you begin the sitting. I have found my body deeply relaxed within seconds that sometimes, even just 20 minutes felt like a really long solid session."
+                title: "Use Your Fierce Desire",
+                text: "Meditation will be so much easier to sit through or lie down through with willpower if you have a fierce desire to change your life, get away from any sort of pain, or manifest your dreams."
             },
             res_deepen_manifest: {
                 title: "Feel The Future Before You Live It",
@@ -285,11 +297,11 @@
             },
             res_struggle_manifest: {
                 title: "Process The Resistance First",
-                text: "Oftentimes, it is hard to truly feel it because your body is likely resisting it. And sometimes, even if you feel like you really do feel it, the body can sneakily disguise the resistance. You would think you feel alright during your meditation session but the resistance, fear, or lack shows up outside of your meditation session.\n\nIf it shows up outside your meditation session or during your meditation session, it means you need to hold space for your feelings . Then once you get it out of your system, you should be able to feel the future with more intensity."
+                text: "When manifesting, the idea is to feel the emotions of your future before you live them. Oftentimes, it is hard to truly feel it because your body is likely resisting it. And sometimes, even if you feel like you really do feel it, the body can sneakily disguise the resistance. You would think you feel alright during your meditation session but the resistance, fear, or lack shows up outside of your meditation session.\n\nIf it shows up outside your meditation session or during your meditation session, it means you need to hold space for your feelings . Then once you get it out of your system, you should be able to feel the future with more intensity."
             },
             res_struggle_time: {
-                title: "Micro Sessions Build The Foundation",
-                text: "However, even if you are someone very dedicated to changing their life and still not able to find time, you can start with how much ever time you have, 1 minute, 5 minutes, or even 10 minutes of intentionally pausing time to sit with yourself.\n\nMeditation will be so much easier to sit through or lie down through with willpower if you have a fierce desire to change your life, get away from any sort of pain, or manifest your dreams."
+                title: "Condition Your Body to Relax Quicker",
+                text: "Initially, it will take around 20-30 minutes simply for your body to settle down and relax. And only once you relax, can you start proceeding towards the other amazing things you want to experience from the session.\n\nAs you keep conditioning your body with meditation, your body will learn to condition itself to relax quicker when you begin the sitting. I have found my body deeply relaxed within seconds that sometimes, even just 20 minutes felt like a really long solid session."
             },
             res_struggle_body: {
                 title: "Lying Down is Your Best Bet",
